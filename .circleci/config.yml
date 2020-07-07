@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  python: circleci/python@0.2.1
+  python: circleci/python@0.3.2
 
 jobs:
   build-and-test:
@@ -9,11 +9,20 @@ jobs:
     steps:
       - checkout
       - python/load-cache
+      - python/load-cache:
+          dependency-file: requirements-dev.txt
       - python/install-deps
+      - python/install-deps:
+          dependency-file: requirements-dev.txt
       - python/save-cache
+      - python/save-cache:
+          dependency-file: requirements-dev.txt
       - run:
-          command: ./manage.py test
+          name: Install package
+          command: pip install .
+      - run:
           name: Test
+          command: pytest tests
 
 workflows:
   main:
